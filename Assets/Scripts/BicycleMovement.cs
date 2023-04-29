@@ -13,6 +13,7 @@ public class BicycleMovement : MonoBehaviour
     private void Start()
     {
         controller = GetComponent<CharacterController>();
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
