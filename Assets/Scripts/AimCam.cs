@@ -6,6 +6,7 @@ using UnityEngine;
 public class AimCam : MonoBehaviour
 {
     [SerializeField] private Transform playerAimCamera;
+    [SerializeField] private GameObject crossHair;
 
     private void SetCameraVisibility()
     {
@@ -17,10 +18,11 @@ public class AimCam : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Mouse1))
         {
             SetCameraVisibility();
+            crossHair.SetActive(isPlayerAimed());
         }
     }
 
-    private bool isPlayerAimed()
+    public bool isPlayerAimed()
     {
         return playerAimCamera.gameObject.activeSelf;
     }
