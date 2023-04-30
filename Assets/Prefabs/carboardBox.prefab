@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1502825247046118314}
   - component: {fileID: 1485190052802507995}
   - component: {fileID: 2145794242859599421}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: carboardBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}

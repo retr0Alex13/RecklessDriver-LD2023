@@ -1423,6 +1423,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1226091863}
   - component: {fileID: 1226091864}
+  - component: {fileID: 1226091867}
   - component: {fileID: 1226091861}
   - component: {fileID: 1226091865}
   - component: {fileID: 1226091866}
@@ -1446,6 +1447,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 330585546}
+  groundCheck: {fileID: 1526978849}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 8
+  groundDistance: 0.4
+  gravity: -9.8
   speed: 5
   turnSmoothTime: 0.1
 --- !u!4 &1226091863
@@ -1464,6 +1471,7 @@ Transform:
   - {fileID: 543450652501201240}
   - {fileID: 1974144487}
   - {fileID: 979948095}
+  - {fileID: 1526978849}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1484,7 +1492,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: -0.42, z: 0}
+  m_Center: {x: 0, y: -0.48, z: 0}
 --- !u!114 &1226091865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1511,9 +1519,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c91d1a53052faf48b79ad11ea9e9f22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  throwStrenght: 30
+  coolDownTimer: 1
   package: {fileID: 1142761921183976063, guid: 045c9bb90b0e5e64ead711ddd8e8e53d, type: 3}
   cameraTransform: {fileID: 330585546}
   packageSpawnPoint: {fileID: 979948095}
+--- !u!114 &1226091867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1226091860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5189fbcae9c9a904fa3c1476369da586, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pushLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  canPush: 1
+  strength: 2
 --- !u!1001 &1353173185
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1733,6 +1760,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1526978848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1526978849}
+  m_Layer: 0
+  m_Name: GroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 7866945982896999795, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1526978849
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526978848}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1226091863}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1598129650
 GameObject:
   m_ObjectHideFlags: 0
