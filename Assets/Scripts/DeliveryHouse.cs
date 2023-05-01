@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class DeliveryHouse : MonoBehaviour
 {
-    public bool isPackageArrived;
+    public bool isPackageArrived = false;
+    public bool isActive = false;
     [SerializeField] private List<DeliveryPoint> deliveryPoints = new List<DeliveryPoint>();
 
-    void Start()
-    {
-        InitializeDeliveryPoints();
-    }
+    public delegate void DeliveryHouseAction();
+    public static event DeliveryHouseAction OnPackageArrived;
 
-    private void InitializeDeliveryPoints()
+    public void InitializeDeliveryPoints()
     {
+        deliveryPoints.Clear();
         foreach (Transform child in transform)
         {
             if (child.TryGetComponent(out DeliveryPoint deliveryPoint))
@@ -23,12 +23,39 @@ public class DeliveryHouse : MonoBehaviour
         }
     }
 
+    public void ActivateDeliveryPoints()
+    {
+        foreach (Transform child in transform)
+        {
+            if (child.TryGetComponent(out DeliveryPoint deliveryPoint))
+            {
+                deliveryPoint.isPackageDeliverd = false;
+                ChangePointMaterialAlpha(deliveryPoint, 0.1f);
+            }
+        }
+        isPackageArrived = false;
+        isActive = true;
+    }
+
+    private void ChangePointMaterialAlpha(DeliveryPoint deliveryPoint, float colorAlpha)
+    {
+        Renderer renderer = deliveryPoint.GetComponent<Renderer>();
+        Material material = renderer.material;
+        Color color = material.color;
+        color.a = colorAlpha;
+        material.color = color;
+    }
+
     public void DisableDeliveryPoints()
     {
         foreach (DeliveryPoint point in deliveryPoints) 
         {
             point.isPackageDeliverd = true;
+            Debug.Log(point.isPackageDeliverd);
+            ChangePointMaterialAlpha(point, 0);
         }
         isPackageArrived = true;
+        isActive = false;
+        OnPackageArrived?.Invoke();
     }
 }

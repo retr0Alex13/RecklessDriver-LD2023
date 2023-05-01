@@ -9,17 +9,18 @@ public class DeliveryPoint : MonoBehaviour
 
     private DeliveryHouse deliveryHouse;
 
+
     public delegate void DeliveryPointScoreAction(int points);
     public static event DeliveryPointScoreAction OnPackageScoreDelivered;
 
-    private void Awake()
+    private void Start()
     {
         deliveryHouse = GetComponentInParent<DeliveryHouse>();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.TryGetComponent(out Package package) && !isPackageDeliverd)
+        if (collision.gameObject.TryGetComponent(out Package package) && deliveryHouse.isActive)
         {
             OnPackageScoreDelivered?.Invoke(pointsToAdd);
             deliveryHouse.DisableDeliveryPoints();
