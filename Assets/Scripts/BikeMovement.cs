@@ -8,6 +8,7 @@ public class BikeMovement : MonoBehaviour
     [SerializeField] private Transform playerCamera;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
+    [SerializeField] private ParticleSystem tireSmoke;
 
     [Header("Movement Settings")]
     [SerializeField] private float groundDistance = 0.4f;
@@ -32,16 +33,24 @@ public class BikeMovement : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if(isGrounded && velocity.y < 0)
+        if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
+        DriveScooter();
+    }
 
+    private void DriveScooter()
+    {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
-        Vector3 direction = new Vector3 (horizontal, 0, vertical).normalized;
+        Vector3 direction = new Vector3(horizontal, 0, vertical).normalized;
 
-        if(direction.magnitude >= 0.1f)
+        velocity.y += gravity * Time.deltaTime;
+
+        controller.Move(velocity * Time.deltaTime);
+
+        if (direction.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + playerCamera.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSoothVelocity, turnSmoothTime);
@@ -51,9 +60,17 @@ public class BikeMovement : MonoBehaviour
 
             controller.Move(moveDirection.normalized * speed * Time.deltaTime);
 
-            velocity.y += gravity * Time.deltaTime;
-
-            controller.Move(velocity * Time.deltaTime);
+            if (!tireSmoke.isPlaying)
+            {
+                tireSmoke.Play();
+            }
+        }
+        else
+        {
+            if (tireSmoke.isPlaying)
+            {
+                tireSmoke.Stop();
+            }
         }
     }
 }

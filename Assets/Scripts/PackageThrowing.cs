@@ -7,14 +7,16 @@ public class PackageThrowing : MonoBehaviour
     [SerializeField] private float throwStrenght = 30f;
     [SerializeField] private float coolDownTimer = 1f;
     [SerializeField] private GameObject package;
+    [SerializeField] private AudioClip packageReload;
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private Transform packageSpawnPoint;
 
+    private AudioSource audioSource;
     private float timer;
 
     void Start()
     {
-
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -41,5 +43,16 @@ public class PackageThrowing : MonoBehaviour
 
         Vector3 forceDirection = Vector3.Scale(cameraTransform.transform.forward, new Vector3(throwStrenght, throwStrenght, throwStrenght));
         packageRigidBody.AddForce(forceDirection, ForceMode.Impulse);
+
+        PlayPackageReloadSound();
+        Destroy(newPackage, 2f);
+    }
+
+    private void PlayPackageReloadSound()
+    {
+        if (!audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(packageReload);
+        }
     }
 }
