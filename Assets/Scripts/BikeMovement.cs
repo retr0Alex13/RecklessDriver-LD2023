@@ -9,24 +9,37 @@ public class BikeMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private ParticleSystem tireSmoke;
+    [SerializeField] private AudioClip crashSound;
 
     [Header("Movement Settings")]
     [SerializeField] private float groundDistance = 0.4f;
     [SerializeField] private float gravity = -9.81f;
 
     [Header("Speed Settings")]
-    [SerializeField] private float speed = 5f;
+    [SerializeField] public float speed = 5f;
     [SerializeField] private float turnSmoothTime = 0.1f;
 
     private float turnSoothVelocity;
     private Vector3 velocity;
     private bool isGrounded;
     private CharacterController controller;
+    private AudioSource audioSource;
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    private void OnEnable()
+    {
+        PlayerFail.OnPlayerFail += CrashBike;
+    }
+
+    private void OnDisable()
+    {
+        PlayerFail.OnPlayerFail -= CrashBike;
     }
 
     void Update()
@@ -50,27 +63,47 @@ public class BikeMovement : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
 
-        if (direction.magnitude >= 0.1f)
-        {
+        //if (direction.magnitude >= 0.1f)
+        //{
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + playerCamera.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSoothVelocity, turnSmoothTime);
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
+            if(!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
             controller.Move(moveDirection.normalized * speed * Time.deltaTime);
 
             if (!tireSmoke.isPlaying)
             {
                 tireSmoke.Play();
             }
-        }
-        else
+        //}
+        //else
+        //{
+        //    if (tireSmoke.isPlaying)
+        //    {
+        //        tireSmoke.Stop();
+        //    }
+        //    audioSource.Pause();
+        //}
+    }
+
+    private void CrashBike()
+    {
+        if(tireSmoke.isPlaying)
         {
-            if (tireSmoke.isPlaying)
-            {
-                tireSmoke.Stop();
-            }
+            tireSmoke.Stop();
         }
+
+        if(audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
+        audioSource.PlayOneShot(crashSound);
+        this.enabled = false;
     }
 }

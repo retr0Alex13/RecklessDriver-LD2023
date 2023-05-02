@@ -51,7 +51,6 @@ public class DeliveryHouse : MonoBehaviour
         foreach (DeliveryPoint point in deliveryPoints) 
         {
             point.isPackageDeliverd = true;
-            Debug.Log(point.isPackageDeliverd);
             ChangePointMaterialAlpha(point, 0);
         }
         isPackageArrived = true;

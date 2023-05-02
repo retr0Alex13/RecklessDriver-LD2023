@@ -3,12 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private int playerScore = 0;
     [SerializeField] private int deliveryHousesAmount = 2;
     [SerializeField] private List<DeliveryHouse> deliveryHouses = new List<DeliveryHouse>();
+    [SerializeField] private float speedIncreasing = 2f;
+    [SerializeField] private float gameOverReloadSeconds = 3f;
+
+    [SerializeField] private BikeMovement playerMovement;
 
     public delegate void GameManagerUIAction(int playerScore);
     public static event GameManagerUIAction OnAddingScore;
@@ -17,12 +22,14 @@ public class GameManager : MonoBehaviour
     {
         DeliveryPoint.OnPackageScoreDelivered += AddScore;
         DeliveryHouse.OnPackageArrived += CheckAndRemoveHouseFromDelivery;
+        PlayerFail.OnPlayerFail += GameOver;
     }
 
     private void OnDisable()
     {
         DeliveryPoint.OnPackageScoreDelivered -= AddScore;
         DeliveryHouse.OnPackageArrived -= CheckAndRemoveHouseFromDelivery;
+        PlayerFail.OnPlayerFail -= GameOver;
     }
 
     private void Awake()
@@ -75,6 +82,7 @@ public class GameManager : MonoBehaviour
         if(deliveryHouses.Count <= 0)
         {
             InitializeHouses();
+            playerMovement.speed += speedIncreasing;
         }
     }
 
@@ -88,4 +96,14 @@ public class GameManager : MonoBehaviour
         OnAddingScore?.Invoke(playerScore);
     }
 
+    private void GameOver()
+    {
+        StartCoroutine(ReloadScene());
+    }
+
+    private IEnumerator ReloadScene()
+    {
+        yield return new WaitForSeconds(gameOverReloadSeconds);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 }
